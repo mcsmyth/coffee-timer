@@ -2,7 +2,7 @@
   "name": "coffee-timer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://<your-github-username>.github.io/coffee-timer",
+  "homepage": "https://mcsmyth.github.io/coffee-timer",
   "dependencies": {
     "lucide-react": "^0.540.0",
     "react": "^19.1.1",
