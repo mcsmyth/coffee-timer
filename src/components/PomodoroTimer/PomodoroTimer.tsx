@@ -7,6 +7,8 @@ import { TimerControls } from './TimerControls';
 import { TimerPresets } from './TimerPresets';
 import { CustomTimerInput } from './CustomTimerInput';
 import { MusicPlayer } from './MusicPlayer';
+import { TodoList } from './TodoList';
+import { TodoListPanel } from './TodoListPanel';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
 
@@ -89,6 +91,9 @@ export const PomodoroTimer: React.FC = () => {
               />
             </div>
           </CoffeeMug>
+          
+          {/* Todo List Panel - accessible during timer */}
+          <TodoListPanel isTimerRunning={timer.isRunning} />
         </div>
       )}
 
@@ -141,6 +146,11 @@ export const PomodoroTimer: React.FC = () => {
             currentTime={initialTime}
             onSetCustomTime={handleCustomTimeSet}
           />
+
+          {/* Todo List */}
+          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <TodoList isTimerRunning={timer.isRunning} />
+          </div>
         </div>
       </div>
     </>
