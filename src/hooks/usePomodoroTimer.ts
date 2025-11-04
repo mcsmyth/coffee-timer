@@ -4,6 +4,7 @@ interface UsePomodoroTimerReturn {
   timeRemaining: number; // in seconds
   isRunning: boolean;
   isComplete: boolean;
+  sessionId: number; // Increments when a new timer session starts
   start: () => void;
   pause: () => void;
   reset: () => void;
@@ -14,7 +15,9 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
   const [timeRemaining, setTimeRemaining] = useState<number>(initialTime);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const wasCompleteRef = useRef<boolean>(false);
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -38,6 +41,7 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
     if (timeRemaining <= 0) {
       setIsRunning(false);
       setIsComplete(true);
+      wasCompleteRef.current = true;
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -50,6 +54,7 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
         if (prev <= 1) {
           setIsRunning(false);
           setIsComplete(true);
+          wasCompleteRef.current = true;
           return 0;
         }
         return prev - 1;
@@ -65,9 +70,15 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
   }, [isRunning, timeRemaining]);
 
   const start = useCallback(() => {
+    // Increment sessionId if starting a new session
+    // (timer was complete or at full time)
+    if (wasCompleteRef.current || timeRemaining === initialTime) {
+      setSessionId(prev => prev + 1);
+    }
+    wasCompleteRef.current = false;
     setIsRunning(true);
     setIsComplete(false);
-  }, []);
+  }, [timeRemaining, initialTime]);
 
   const pause = useCallback(() => {
     setIsRunning(false);
@@ -76,12 +87,14 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
   const reset = useCallback(() => {
     setIsRunning(false);
     setIsComplete(false);
+    wasCompleteRef.current = false;
     setTimeRemaining(initialTime);
   }, [initialTime]);
 
   const setTime = useCallback((seconds: number) => {
     setIsRunning(false);
     setIsComplete(false);
+    wasCompleteRef.current = false;
     setTimeRemaining(seconds);
   }, []);
 
@@ -89,6 +102,7 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
     timeRemaining,
     isRunning,
     isComplete,
+    sessionId,
     start,
     pause,
     reset,
