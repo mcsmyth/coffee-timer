@@ -4,11 +4,12 @@ import { MUSIC_PLAYLIST, getSongUrl } from '../../config/musicPlaylist';
 
 interface MusicPlayerProps {
   isRunning: boolean;
+  sessionId: number; // Changes when a new timer session starts
 }
 
 const MUTE_STORAGE_KEY = 'pomodoro_music_muted';
 
-export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning }) => {
+export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }) => {
   // Load mute state from localStorage
   const getInitialMuteState = (): boolean => {
     const saved = localStorage.getItem(MUTE_STORAGE_KEY);
@@ -171,6 +172,15 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning }) => {
       }
     }
   }, [isRunning, isMuted, isLoading, hasError]);
+
+  // Skip to next song when a new timer session starts
+  useEffect(() => {
+    if (sessionId > 0 && MUSIC_PLAYLIST.length > 1) {
+      console.log(`New timer session detected (session ${sessionId}), selecting next song`);
+      playNextSong();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
 
   const toggleMute = () => {
     const newMuteState = !isMuted;
