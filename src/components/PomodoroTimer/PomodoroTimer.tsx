@@ -85,6 +85,7 @@ export const PomodoroTimer: React.FC = () => {
               <TimerDisplay
                 timeRemaining={timer.timeRemaining}
                 isComplete={timer.isComplete}
+                overlay={true}
               />
 
               {/* Timer Controls */}
