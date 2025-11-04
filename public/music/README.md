@@ -2,14 +2,32 @@
 
 Place your lofi jazz music files here (MP3, OGG, etc.).
 
-## Getting Started
+The music player supports multiple songs and will automatically loop through your playlist!
 
-1. Download a royalty-free lofi jazz track
-2. Place it in this folder (e.g., `lofi-jazz.mp3`)
-3. Update `src/components/PomodoroTimer/MusicPlayer.tsx`:
+## Adding Songs to Your Playlist
+
+1. **Download a royalty-free music track** (see sources below)
+2. **Place the file** in this folder (e.g., `lofi-chill-beats.mp3`)
+3. **Update the playlist** in `src/config/musicPlaylist.ts`:
    ```typescript
-   const LOFI_JAZZ_URL = '/music/lofi-jazz.mp3';
+   export const MUSIC_PLAYLIST: Song[] = [
+     {
+       filename: 'lofi-jazz-cafe-327791.mp3',
+       title: 'Lofi Jazz Cafe'
+     },
+     {
+       filename: 'lofi-chill-beats.mp3',  // Add your new song here
+       title: 'Lofi Chill Beats'
+     }
+   ];
    ```
+
+## Playlist Features
+
+- **Automatic progression**: Songs play sequentially
+- **Infinite looping**: Playlist repeats when it reaches the end
+- **Skip button**: Appears when you have 2+ songs (only visible when music is on)
+- **Song info**: Shows current song name and position in playlist
 
 ## Free Music Sources
 
@@ -19,5 +37,5 @@ Place your lofi jazz music files here (MP3, OGG, etc.).
 - **Bensound**: https://www.bensound.com/
 - **YouTube Audio Library**: https://www.youtube.com/audiolibrary (requires download)
 
-Make sure to check the license requirements for any music you use!
+**Important**: Make sure to check the license requirements for any music you use!
 
