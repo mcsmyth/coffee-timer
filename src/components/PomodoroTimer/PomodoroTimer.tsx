@@ -61,25 +61,16 @@ export const PomodoroTimer: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-          ☕ Pomodoro Timer
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Stay focused with a cup of coffee
-        </p>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
-        {/* Coffee Shop Visualization with overlaid timer when running */}
-        <CoffeeMug
-          timeRemaining={timer.timeRemaining}
-          initialTime={initialTime}
-          isComplete={timer.isComplete}
-          isRunning={timer.isRunning}
-        >
-          {timer.isRunning && (
+    <>
+      {/* Coffee Shop Full Screen View when timer is running */}
+      {timer.isRunning && (
+        <div className="fixed inset-0 z-10">
+          <CoffeeMug
+            timeRemaining={timer.timeRemaining}
+            initialTime={initialTime}
+            isComplete={timer.isComplete}
+            isRunning={timer.isRunning}
+          >
             <div className="text-center space-y-4">
               {/* Timer Display */}
               <TimerDisplay
@@ -97,19 +88,37 @@ export const PomodoroTimer: React.FC = () => {
                 onReset={timer.reset}
               />
             </div>
-          )}
-        </CoffeeMug>
+          </CoffeeMug>
+        </div>
+      )}
 
-        {/* Timer Display - shown when NOT running */}
-        {!timer.isRunning && (
+      {/* Standard Layout when timer is NOT running */}
+      <div className={`max-w-4xl mx-auto px-4 py-8 ${timer.isRunning ? 'opacity-0 pointer-events-none' : ''}`}>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+            ☕ Pomodoro Timer
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Stay focused with a cup of coffee
+          </p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+          {/* Coffee Shop Preview when timer is not running */}
+          <CoffeeMug
+            timeRemaining={timer.timeRemaining}
+            initialTime={initialTime}
+            isComplete={timer.isComplete}
+            isRunning={false}
+          />
+
+          {/* Timer Display - shown when NOT running */}
           <TimerDisplay
             timeRemaining={timer.timeRemaining}
             isComplete={timer.isComplete}
           />
-        )}
 
-        {/* Timer Controls - shown when NOT running */}
-        {!timer.isRunning && (
+          {/* Timer Controls - shown when NOT running */}
           <TimerControls
             isRunning={timer.isRunning}
             isComplete={timer.isComplete}
@@ -117,24 +126,24 @@ export const PomodoroTimer: React.FC = () => {
             onPause={timer.pause}
             onReset={timer.reset}
           />
-        )}
 
-        {/* Music Player */}
-        <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
+          {/* Music Player */}
+          <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
 
-        {/* Timer Presets */}
-        <TimerPresets
-          selectedTime={initialTime}
-          onSelectPreset={handlePresetSelect}
-        />
+          {/* Timer Presets */}
+          <TimerPresets
+            selectedTime={initialTime}
+            onSelectPreset={handlePresetSelect}
+          />
 
-        {/* Custom Timer Input */}
-        <CustomTimerInput
-          currentTime={initialTime}
-          onSetCustomTime={handleCustomTimeSet}
-        />
+          {/* Custom Timer Input */}
+          <CustomTimerInput
+            currentTime={initialTime}
+            onSetCustomTime={handleCustomTimeSet}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
