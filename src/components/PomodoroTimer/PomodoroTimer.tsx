@@ -11,6 +11,8 @@ import { TodoList } from './TodoList';
 import { TodoListPanel } from './TodoListPanel';
 import { ModeSelector } from './ModeSelector';
 import { FullScreenMuteButton } from './FullScreenMuteButton';
+import { SettingsButton } from './SettingsButton';
+import { SettingsPanel } from './SettingsPanel';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
 
@@ -28,6 +30,7 @@ export const PomodoroTimer: React.FC = () => {
   };
 
   const [initialTime, setInitialTime] = useState<number>(getInitialTime());
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const timer = usePomodoroTimer(initialTime);
 
   // Play notification sound when timer completes
@@ -110,8 +113,14 @@ export const PomodoroTimer: React.FC = () => {
           
           {/* Mute Button - top-right corner */}
           <FullScreenMuteButton />
+          
+          {/* Settings Button - bottom-right corner */}
+          <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
         </div>
       )}
+
+      {/* Settings Panel */}
+      <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
       {/* Standard Layout when timer is NOT running */}
       <div className={`max-w-4xl mx-auto px-4 py-8 ${timer.isRunning ? 'opacity-0 pointer-events-none' : ''}`}>
@@ -166,6 +175,11 @@ export const PomodoroTimer: React.FC = () => {
           {/* Todo List */}
           <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
             <TodoList isTimerRunning={timer.isRunning} />
+          </div>
+
+          {/* Settings Button */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-center">
+            <SettingsButton onClick={() => setIsSettingsOpen(true)} />
           </div>
         </div>
       </div>
