@@ -41,9 +41,8 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
         )}
         <button
           onClick={onReset}
-          className="flex items-center justify-center gap-2 w-14 h-14 rounded-full bg-black/80 hover:bg-black/90 text-white transition-all duration-200 shadow-xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="flex items-center justify-center gap-2 w-14 h-14 rounded-full bg-black/80 hover:bg-black/90 text-white transition-all duration-200 shadow-xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
           aria-label="Reset timer"
-          disabled={!isRunning && !isComplete}
         >
           <RotateCcw size={24} />
         </button>
@@ -75,9 +74,8 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
       )}
       <button
         onClick={onReset}
-        className="flex items-center gap-2 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-lg transition-colors duration-200"
         aria-label="Reset timer"
-        disabled={!isRunning && !isComplete}
       >
         <RotateCcw size={20} />
         Reset
