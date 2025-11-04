@@ -10,6 +10,7 @@ import { MusicPlayer } from './MusicPlayer';
 import { TodoList } from './TodoList';
 import { TodoListPanel } from './TodoListPanel';
 import { ModeSelector } from './ModeSelector';
+import { FullScreenMuteButton } from './FullScreenMuteButton';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
 
@@ -106,6 +107,9 @@ export const PomodoroTimer: React.FC = () => {
           
           {/* Todo List Panel - accessible during timer */}
           <TodoListPanel isTimerRunning={timer.isRunning} />
+          
+          {/* Mute Button - top-right corner */}
+          <FullScreenMuteButton />
         </div>
       )}
 

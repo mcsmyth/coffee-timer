@@ -7,4 +7,5 @@ export { CustomTimerInput } from './CustomTimerInput';
 export { MusicPlayer } from './MusicPlayer';
 export { TodoList } from './TodoList';
 export { ModeSelector } from './ModeSelector';
+export { FullScreenMuteButton } from './FullScreenMuteButton';
 

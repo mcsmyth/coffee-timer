@@ -179,7 +179,25 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
     setIsMuted(newMuteState);
     // Save to localStorage
     localStorage.setItem(MUTE_STORAGE_KEY, String(newMuteState));
+    // Dispatch custom event so other components (like FullScreenMuteButton) can react
+    window.dispatchEvent(new CustomEvent('musicMuteToggled', { detail: { isMuted: newMuteState } }));
   };
+
+  // Listen for mute toggle events from other components (like FullScreenMuteButton)
+  useEffect(() => {
+    const handleMuteToggle = (e: Event) => {
+      const customEvent = e as CustomEvent<{ isMuted: boolean }>;
+      if (customEvent.detail) {
+        setIsMuted(customEvent.detail.isMuted);
+      }
+    };
+
+    window.addEventListener('musicMuteToggled', handleMuteToggle as EventListener);
+
+    return () => {
+      window.removeEventListener('musicMuteToggled', handleMuteToggle as EventListener);
+    };
+  }, []);
 
   const currentSong = MUSIC_PLAYLIST[currentSongIndex];
   const showPlaylistControls = MUSIC_PLAYLIST.length > 1;
