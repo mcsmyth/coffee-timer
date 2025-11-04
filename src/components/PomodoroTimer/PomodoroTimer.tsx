@@ -9,6 +9,7 @@ import { CustomTimerInput } from './CustomTimerInput';
 import { MusicPlayer } from './MusicPlayer';
 import { TodoList } from './TodoList';
 import { TodoListPanel } from './TodoListPanel';
+import { ModeSelector } from './ModeSelector';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
 
@@ -73,21 +74,32 @@ export const PomodoroTimer: React.FC = () => {
             isComplete={timer.isComplete}
             isRunning={timer.isRunning}
           >
-            <div className="text-center space-y-4">
-              {/* Timer Display */}
+            {/* Mode Selector - Top Center */}
+            <div className="absolute top-5 left-1/2 transform -translate-x-1/2 z-20">
+              <ModeSelector
+                selectedTime={initialTime}
+                onSelectPreset={handlePresetSelect}
+              />
+            </div>
+
+            {/* Timer Display - Centered */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
               <TimerDisplay
                 timeRemaining={timer.timeRemaining}
                 isComplete={timer.isComplete}
                 overlay={true}
               />
+            </div>
 
-              {/* Timer Controls */}
+            {/* Timer Controls - Below Timer */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 z-20" style={{ marginTop: '180px' }}>
               <TimerControls
                 isRunning={timer.isRunning}
                 isComplete={timer.isComplete}
                 onStart={timer.start}
                 onPause={timer.pause}
                 onReset={timer.reset}
+                overlay={true}
               />
             </div>
           </CoffeeMug>

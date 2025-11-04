@@ -21,7 +21,8 @@ export const CoffeeMug: React.FC<CoffeeMugProps> = ({
   // When running, it should be full screen
   if (isRunning) {
     return (
-      <div className="relative w-screen h-screen overflow-hidden">
+      <div className="fixed inset-0 w-screen h-screen overflow-hidden">
+        {/* Coffee Shop Image - Full coverage */}
         <img
           src={imagePath}
           alt="Lo-Fi Coffee Shop"
@@ -35,17 +36,11 @@ export const CoffeeMug: React.FC<CoffeeMugProps> = ({
             (e.target as HTMLImageElement).style.display = 'none';
           }}
         />
-        {/* Light overlay gradient for minimal interference */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/20 pointer-events-none" />
+        {/* Very subtle overlay gradient for minimal interference */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15 pointer-events-none" />
         
-        {/* Overlay timer display and controls - very transparent */}
-        {children && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 pointer-events-none">
-            <div className="pointer-events-auto bg-black/10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/10">
-              {children}
-            </div>
-          </div>
-        )}
+        {/* Direct children - no wrapper container */}
+        {children}
       </div>
     );
   }
