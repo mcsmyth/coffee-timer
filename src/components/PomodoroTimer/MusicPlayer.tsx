@@ -4,11 +4,12 @@ import { MUSIC_PLAYLIST, getSongUrl } from '../../config/musicPlaylist';
 
 interface MusicPlayerProps {
   isRunning: boolean;
+  sessionId: number; // Changes when a new timer session starts
 }
 
 const MUTE_STORAGE_KEY = 'pomodoro_music_muted';
 
-export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning }) => {
+export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }) => {
   // Load mute state from localStorage
   const getInitialMuteState = (): boolean => {
     const saved = localStorage.getItem(MUTE_STORAGE_KEY);
@@ -117,17 +118,8 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning }) => {
 
     // Set a timeout to warn if loading takes too long
     timeoutRef.current = setTimeout(() => {
-      if (isLoading) {
-        console.warn('Audio loading timeout - still loading after 10 seconds');
-      }
+      console.warn('Audio loading timeout - still loading after 10 seconds');
     }, 10000);
-
-    // If timer was running and not muted, play the new song
-    if (isRunning && !isMuted) {
-      audio.play().catch((error) => {
-        console.warn('Audio playback failed:', error);
-      });
-    }
 
     return () => {
       // Cleanup event listeners
@@ -140,7 +132,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning }) => {
       audio.removeEventListener('stalled', handleStalled);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [currentSongIndex, isRunning, isMuted, isLoading, playNextSong]);
+  }, [currentSongIndex, playNextSong]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -171,6 +163,16 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning }) => {
       }
     }
   }, [isRunning, isMuted, isLoading, hasError]);
+
+  // Skip to next song when a new timer session starts
+  useEffect(() => {
+    // Skip the initial mount (sessionId = 0) and only trigger on actual session changes
+    // Also only trigger if we have multiple songs
+    if (sessionId > 1 && MUSIC_PLAYLIST.length > 1) {
+      console.log(`New timer session detected (session ${sessionId}), selecting next song`);
+      playNextSong();
+    }
+  }, [sessionId, playNextSong]);
 
   const toggleMute = () => {
     const newMuteState = !isMuted;

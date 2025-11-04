@@ -119,7 +119,7 @@ export const PomodoroTimer: React.FC = () => {
         )}
 
         {/* Music Player */}
-        <MusicPlayer isRunning={timer.isRunning} />
+        <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
 
         {/* Timer Presets */}
         <TimerPresets
