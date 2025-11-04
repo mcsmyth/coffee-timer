@@ -72,27 +72,51 @@ export const PomodoroTimer: React.FC = () => {
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
-        {/* Coffee Mug Visualization */}
+        {/* Coffee Shop Visualization with overlaid timer when running */}
         <CoffeeMug
           timeRemaining={timer.timeRemaining}
           initialTime={initialTime}
           isComplete={timer.isComplete}
-        />
-
-        {/* Timer Display */}
-        <TimerDisplay
-          timeRemaining={timer.timeRemaining}
-          isComplete={timer.isComplete}
-        />
-
-        {/* Timer Controls */}
-        <TimerControls
           isRunning={timer.isRunning}
-          isComplete={timer.isComplete}
-          onStart={timer.start}
-          onPause={timer.pause}
-          onReset={timer.reset}
-        />
+        >
+          {timer.isRunning && (
+            <div className="text-center space-y-4">
+              {/* Timer Display */}
+              <TimerDisplay
+                timeRemaining={timer.timeRemaining}
+                isComplete={timer.isComplete}
+              />
+
+              {/* Timer Controls */}
+              <TimerControls
+                isRunning={timer.isRunning}
+                isComplete={timer.isComplete}
+                onStart={timer.start}
+                onPause={timer.pause}
+                onReset={timer.reset}
+              />
+            </div>
+          )}
+        </CoffeeMug>
+
+        {/* Timer Display - shown when NOT running */}
+        {!timer.isRunning && (
+          <TimerDisplay
+            timeRemaining={timer.timeRemaining}
+            isComplete={timer.isComplete}
+          />
+        )}
+
+        {/* Timer Controls - shown when NOT running */}
+        {!timer.isRunning && (
+          <TimerControls
+            isRunning={timer.isRunning}
+            isComplete={timer.isComplete}
+            onStart={timer.start}
+            onPause={timer.pause}
+            onReset={timer.reset}
+          />
+        )}
 
         {/* Music Player */}
         <MusicPlayer isRunning={timer.isRunning} />
