@@ -12,6 +12,25 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Coffee Timer - Pomodoro Timer</title>
+
+    <!-- Google Analytics 4 -->
+    <script>
+      // Only load Google Analytics if measurement ID is provided
+      window.GA_MEASUREMENT_ID = '%REACT_APP_GA_MEASUREMENT_ID%';
+      if (window.GA_MEASUREMENT_ID && window.GA_MEASUREMENT_ID.startsWith('G-')) {
+        // Load gtag.js script
+        var gtagScript = document.createElement('script');
+        gtagScript.async = true;
+        gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+        document.head.appendChild(gtagScript);
+
+        // Initialize gtag
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', window.GA_MEASUREMENT_ID);
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

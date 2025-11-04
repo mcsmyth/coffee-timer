@@ -128,6 +128,24 @@ To use a custom domain:
 2. Configure your domain's DNS settings to point to GitHub Pages
 3. Enable "Enforce HTTPS" in repository settings
 
+## Google Analytics (Optional)
+
+Want to track how many people use your Coffee Timer? Set up Google Analytics 4!
+
+**See the complete guide**: [GOOGLE_ANALYTICS_SETUP.md](GOOGLE_ANALYTICS_SETUP.md)
+
+**Quick setup:**
+1. Create a Google Analytics 4 property at https://analytics.google.com/
+2. Get your Measurement ID (format: `G-XXXXXXXXXX`)
+3. Add it as a GitHub Secret named `GA_MEASUREMENT_ID`
+4. Deploy your app - analytics will start tracking automatically!
+
+**What you'll see:**
+- Unique visitors and sessions
+- User locations and devices
+- Time spent on your app
+- Traffic sources
+
 ## Need Help?
 
 - GitHub Pages Documentation: https://docs.github.com/en/pages
