@@ -138,10 +138,10 @@ export const PomodoroTimer: React.FC = () => {
       <div className={`max-w-4xl mx-auto px-4 py-8 ${timer.isRunning ? 'opacity-0 pointer-events-none' : ''}`}>
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-            ☕ Pomodoro Timer
+            ☕ Caffeination
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Stay focused with a cup of coffee
+            Stay focused in your workflow with a cup of coffee and some lofi jazz and some coffee shop vibes.
           </p>
         </div>
 
