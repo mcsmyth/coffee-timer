@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_PRESETS, minutesToSeconds } from '../../utils/timerUtils';
+import { DEFAULT_PRESETS } from '../../utils/timerUtils';
 
 interface ModeSelectorProps {
   selectedTime: number; // in seconds
