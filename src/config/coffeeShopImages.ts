@@ -18,13 +18,18 @@ export interface CoffeeShopImage {
 export const COFFEE_SHOP_IMAGES: CoffeeShopImage[] = [
   {
     id: 'coffee-shop-1',
-    filename: 'coffee-shop.png',
+    filename: 'coffee-shop-1.png',
     name: 'Lo-Fi Coffee Shop (Original)'
   },
   {
     id: 'coffee-shop-2',
     filename: 'coffee-shop-2.jpg',
     name: 'Coffee Shop Scene 2'
+  },
+  {
+    id: 'matcha-shop-1',
+    filename: 'matcha-shop-1.jpg',
+    name: 'Matcha Shop Scene'
   }
 ];
 

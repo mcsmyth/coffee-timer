@@ -31,6 +31,10 @@ export const MUSIC_PLAYLIST: Song[] = [
   {
     filename: 'warm-breeze-lofi-music-chill-lofi-344259.mp3',
     title: 'Warm Breeze Lofi'
+  },
+  {
+    filename: 'good-night-lofi-cozy-chill-music.mp3',
+    title: 'Good Night Lofi Cozy Chill'
   }
 ];
 
