@@ -13,6 +13,8 @@ import { ModeSelector } from './ModeSelector';
 import { FullScreenMuteButton } from './FullScreenMuteButton';
 import { SettingsButton } from './SettingsButton';
 import { SettingsPanel } from './SettingsPanel';
+import { AnalyticsView } from './AnalyticsView';
+import { BarChart3 } from 'lucide-react';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
 
@@ -31,6 +33,7 @@ export const PomodoroTimer: React.FC = () => {
 
   const [initialTime, setInitialTime] = useState<number>(getInitialTime());
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
   const timer = usePomodoroTimer(initialTime);
 
   // Play notification sound when timer completes
@@ -66,6 +69,11 @@ export const PomodoroTimer: React.FC = () => {
     // Save to localStorage
     localStorage.setItem(STORAGE_KEY, seconds.toString());
   };
+
+  // Show analytics view if requested
+  if (showAnalytics) {
+    return <AnalyticsView onBack={() => setShowAnalytics(false)} />;
+  }
 
   return (
     <>
@@ -185,9 +193,17 @@ export const PomodoroTimer: React.FC = () => {
             />
           </div>
 
-          {/* Settings Button */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-center">
+          {/* Settings and Analytics Buttons */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-center gap-4">
             <SettingsButton onClick={() => setIsSettingsOpen(true)} />
+            <button
+              onClick={() => setShowAnalytics(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-label="View Analytics"
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span>Analytics</span>
+            </button>
           </div>
         </div>
       </div>
