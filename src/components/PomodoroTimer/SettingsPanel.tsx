@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Music } from 'lucide-react';
 import { COFFEE_SHOP_IMAGES, getCoffeeShopImageUrl } from '../../config/coffeeShopImages';
-import { getSelectedCoffeeShopImageId, setSelectedCoffeeShopImageId } from '../../utils/settingsUtils';
+import { MUSIC_PLAYLIST } from '../../config/musicPlaylist';
+import { getSelectedCoffeeShopImageId, setSelectedCoffeeShopImageId, getSelectedSongIndex, setSelectedSongIndex } from '../../utils/settingsUtils';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -10,10 +11,16 @@ interface SettingsPanelProps {
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   const [selectedImageId, setSelectedImageId] = useState<string>(getSelectedCoffeeShopImageId());
+  const [selectedSongIndex, setSelectedSongIndexState] = useState<number>(getSelectedSongIndex(MUSIC_PLAYLIST.length));
 
   // Update selected image when localStorage changes
   useEffect(() => {
     setSelectedImageId(getSelectedCoffeeShopImageId());
+  }, [isOpen]);
+
+  // Update selected song when localStorage changes
+  useEffect(() => {
+    setSelectedSongIndexState(getSelectedSongIndex(MUSIC_PLAYLIST.length));
   }, [isOpen]);
 
   const handleImageSelect = (imageId: string) => {
@@ -22,6 +29,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
     
     // Dispatch event so CoffeeMug component can update
     window.dispatchEvent(new CustomEvent('coffeeShopImageChanged'));
+  };
+
+  const handleSongSelect = (songIndex: number) => {
+    setSelectedSongIndexState(songIndex);
+    setSelectedSongIndex(songIndex);
   };
 
   if (!isOpen) return null;
@@ -114,6 +126,64 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
                       }`}>
                         {image.name}
                       </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Music Selection */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+              <Music className="w-5 h-5" />
+              Background Music
+            </h3>
+            <div className="space-y-2">
+              {MUSIC_PLAYLIST.map((song, index) => {
+                const isSelected = selectedSongIndex === index;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleSongSelect(index)}
+                    className={`w-full text-left rounded-lg border-2 transition-all duration-200 p-3 ${
+                      isSelected
+                        ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className={`font-medium truncate ${
+                          isSelected
+                            ? 'text-blue-600 dark:text-blue-400'
+                            : 'text-gray-700 dark:text-gray-300'
+                        }`}>
+                          {song.title || song.filename}
+                        </p>
+                        {isSelected && (
+                          <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">
+                            Currently selected
+                          </p>
+                        )}
+                      </div>
+                      {isSelected && (
+                        <div className="ml-3 bg-blue-500 text-white rounded-full p-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                      )}
                     </div>
                   </button>
                 );

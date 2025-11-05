@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Volume2, VolumeX, SkipForward } from 'lucide-react';
 import { MUSIC_PLAYLIST, getSongUrl } from '../../config/musicPlaylist';
+import { getSelectedSongIndex } from '../../utils/settingsUtils';
 
 interface MusicPlayerProps {
   isRunning: boolean;
@@ -16,12 +17,36 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
     return saved === 'true';
   };
 
+  // Load selected song index from localStorage
+  const getInitialSongIndex = (): number => {
+    return getSelectedSongIndex(MUSIC_PLAYLIST.length);
+  };
+
   const [isMuted, setIsMuted] = useState<boolean>(getInitialMuteState());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(getInitialSongIndex());
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Listen for song selection changes from settings
+  useEffect(() => {
+    const handleSongChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ songIndex: number }>;
+      if (customEvent.detail) {
+        const newIndex = customEvent.detail.songIndex;
+        if (newIndex >= 0 && newIndex < MUSIC_PLAYLIST.length) {
+          setCurrentSongIndex(newIndex);
+        }
+      }
+    };
+
+    window.addEventListener('selectedSongChanged', handleSongChange as EventListener);
+
+    return () => {
+      window.removeEventListener('selectedSongChanged', handleSongChange as EventListener);
+    };
+  }, []);
 
   // Function to play next song in playlist
   const playNextSong = useCallback(() => {

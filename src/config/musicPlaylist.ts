@@ -23,13 +23,15 @@ export const MUSIC_PLAYLIST: Song[] = [
   {
     filename: 'lofi-jazz-cafe-327791.mp3',
     title: 'Lofi Jazz Cafe'
+  },
+  {
+    filename: 'sloth-tier-lofi-jazz-223593.mp3',
+    title: 'Sloth Tier Lofi Jazz'
+  },
+  {
+    filename: 'warm-breeze-lofi-music-chill-lofi-344259.mp3',
+    title: 'Warm Breeze Lofi'
   }
-  // Add more songs here as you add them to public/music/
-  // Example:
-  // {
-  //   filename: 'lofi-chill-beats.mp3',
-  //   title: 'Lofi Chill Beats'
-  // },
 ];
 
 /**
