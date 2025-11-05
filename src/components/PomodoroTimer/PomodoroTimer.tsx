@@ -18,7 +18,12 @@ import { BarChart3 } from 'lucide-react';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
 
-export const PomodoroTimer: React.FC = () => {
+interface PomodoroTimerProps {
+  isDarkMode: boolean;
+  setIsDarkMode: (isDarkMode: boolean) => void;
+}
+
+export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsDarkMode }) => {
   // Load saved custom time from localStorage or use default Pomodoro
   const getInitialTime = (): number => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -132,7 +137,12 @@ export const PomodoroTimer: React.FC = () => {
       )}
 
       {/* Settings Panel */}
-      <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <SettingsPanel
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      />
 
       {/* Standard Layout when timer is NOT running */}
       <div className={`max-w-4xl mx-auto px-4 py-8 ${timer.isRunning ? 'opacity-0 pointer-events-none' : ''}`}>
