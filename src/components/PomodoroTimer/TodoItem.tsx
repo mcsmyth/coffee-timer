@@ -1,6 +1,6 @@
 import React from 'react';
-import { TodoItem as TodoItemType } from '../../utils/todoUtils';
-import { X } from 'lucide-react';
+import { TodoItem as TodoItemType, formatTimeSpent } from '../../utils/todoUtils';
+import { X, Clock } from 'lucide-react';
 
 interface TodoItemProps {
   todo: TodoItemType;
@@ -29,16 +29,26 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) 
       />
 
       {/* Task Text */}
-      <label
-        className={`flex-1 cursor-pointer select-none transition-all duration-200 ${
-          todo.completed
-            ? 'line-through text-gray-500 dark:text-gray-400'
-            : 'text-gray-800 dark:text-gray-200'
-        }`}
-        onClick={handleToggle}
-      >
-        {todo.text}
-      </label>
+      <div className="flex-1 flex items-center gap-2">
+        <label
+          className={`flex-1 cursor-pointer select-none transition-all duration-200 ${
+            todo.completed
+              ? 'line-through text-gray-500 dark:text-gray-400'
+              : 'text-gray-800 dark:text-gray-200'
+          }`}
+          onClick={handleToggle}
+        >
+          {todo.text}
+        </label>
+
+        {/* Time Spent Badge (for completed tasks) */}
+        {todo.completed && todo.timeSpent !== undefined && todo.timeSpent > 0 && (
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium">
+            <Clock className="w-3 h-3" />
+            {formatTimeSpent(todo.timeSpent)}
+          </span>
+        )}
+      </div>
 
       {/* Delete Button */}
       <button
