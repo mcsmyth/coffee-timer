@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { X, Music } from 'lucide-react';
+import { X, Music, Moon, Sun } from 'lucide-react';
 import { COFFEE_SHOP_IMAGES, getCoffeeShopImageUrl } from '../../config/coffeeShopImages';
 import { MUSIC_PLAYLIST } from '../../config/musicPlaylist';
 import { getSelectedCoffeeShopImageId, setSelectedCoffeeShopImageId, getSelectedSongIndex, setSelectedSongIndex } from '../../utils/settingsUtils';
+import { saveDarkModePreference } from '../../utils/darkModeUtils';
 
 interface SettingsPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  isDarkMode: boolean;
+  setIsDarkMode: (isDarkMode: boolean) => void;
 }
 
-export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
+export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, isDarkMode, setIsDarkMode }) => {
   const [selectedImageId, setSelectedImageId] = useState<string>(getSelectedCoffeeShopImageId());
   const [selectedSongIndex, setSelectedSongIndexState] = useState<number>(getSelectedSongIndex(MUSIC_PLAYLIST.length));
 
@@ -34,6 +37,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
   const handleSongSelect = (songIndex: number) => {
     setSelectedSongIndexState(songIndex);
     setSelectedSongIndex(songIndex);
+  };
+
+  const handleDarkModeToggle = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    saveDarkModePreference(newMode);
   };
 
   if (!isOpen) return null;
@@ -68,6 +77,44 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
             >
               <X className="w-5 h-5" />
             </button>
+          </div>
+
+          {/* Dark Mode Toggle */}
+          <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {isDarkMode ? (
+                  <Moon className="w-5 h-5 text-blue-500" />
+                ) : (
+                  <Sun className="w-5 h-5 text-amber-500" />
+                )}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    Dark Mode
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {isDarkMode ? 'Dark theme enabled' : 'Light theme enabled'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Toggle Switch */}
+              <button
+                onClick={handleDarkModeToggle}
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  isDarkMode ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+                role="switch"
+                aria-checked={isDarkMode}
+                aria-label="Toggle dark mode"
+              >
+                <span
+                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-200 ${
+                    isDarkMode ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
 
           {/* Coffee Shop Image Selection */}
