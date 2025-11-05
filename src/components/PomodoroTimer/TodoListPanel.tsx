@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TodoList } from './TodoList';
 import { List, X } from 'lucide-react';
 
@@ -14,6 +14,15 @@ export const TodoListPanel: React.FC<TodoListPanelProps> = ({
   isTimerActive
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [reloadTrigger, setReloadTrigger] = useState<number>(0);
+  
+  // Force reload when timer starts (panel becomes available)
+  useEffect(() => {
+    if (isTimerRunning) {
+      // Trigger a reload by changing the key when timer starts
+      setReloadTrigger((prev) => prev + 1);
+    }
+  }, [isTimerRunning]);
 
   // Only show when timer is running
   if (!isTimerRunning) {
@@ -21,7 +30,13 @@ export const TodoListPanel: React.FC<TodoListPanelProps> = ({
   }
 
   const togglePanel = () => {
-    setIsOpen(!isOpen);
+    const willOpen = !isOpen;
+    setIsOpen(willOpen);
+    
+    // When opening the panel, trigger a reload to ensure fresh data
+    if (willOpen) {
+      setReloadTrigger((prev) => prev + 1);
+    }
   };
 
   return (
@@ -65,6 +80,7 @@ export const TodoListPanel: React.FC<TodoListPanelProps> = ({
       >
         <div className="p-6">
           <TodoList
+            key={`todo-list-panel-${reloadTrigger}`}
             isTimerRunning={isTimerRunning}
             sessionId={sessionId}
             isTimerActive={isTimerActive}

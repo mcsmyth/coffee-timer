@@ -1,14 +1,35 @@
 import React from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { TodoItem as TodoItemType, formatTimeSpent } from '../../utils/todoUtils';
-import { X, Clock } from 'lucide-react';
+import { X, Clock, GripVertical } from 'lucide-react';
 
 interface TodoItemProps {
   todo: TodoItemType;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  isDraggable?: boolean;
 }
 
-export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
+export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, isDraggable = true }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ 
+    id: todo.id,
+    disabled: !isDraggable,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   const handleToggle = () => {
     onToggle(todo.id);
   };
@@ -18,7 +39,25 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) 
   };
 
   return (
-    <div className="group flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-200 ${
+        isDragging ? 'cursor-grabbing' : 'cursor-grab'
+      }`}
+    >
+      {/* Drag Handle */}
+      {isDraggable && (
+        <div
+          {...attributes}
+          {...listeners}
+          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+          aria-label="Drag to reorder"
+        >
+          <GripVertical className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+        </div>
+      )}
+
       {/* Checkbox */}
       <input
         type="checkbox"
