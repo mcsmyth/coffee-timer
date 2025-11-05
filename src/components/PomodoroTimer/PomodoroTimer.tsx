@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { usePomodoroTimer } from '../../hooks/usePomodoroTimer';
-import { DEFAULT_PRESETS } from '../../utils/timerUtils';
+import { DEFAULT_PRESETS, minutesToSeconds } from '../../utils/timerUtils';
 import { CoffeeMug } from './CoffeeMug';
 import { TimerDisplay } from './TimerDisplay';
 import { TimerControls } from './TimerControls';
 import { TimerPresets } from './TimerPresets';
-import { CustomTimerInput } from './CustomTimerInput';
 import { MusicPlayer } from './MusicPlayer';
 import { TodoList } from './TodoList';
 import { TodoListPanel } from './TodoListPanel';
@@ -36,7 +35,19 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
     return DEFAULT_PRESETS.POMODORO;
   };
 
+  const getCustomTime = (): number => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+    return minutesToSeconds(1); // Default to 1 minute
+  };
+
   const [initialTime, setInitialTime] = useState<number>(getInitialTime());
+  const [customTime, setCustomTime] = useState<number>(getCustomTime());
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
   const timer = usePomodoroTimer(initialTime);
@@ -70,6 +81,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
 
   const handleCustomTimeSet = (seconds: number) => {
     setInitialTime(seconds);
+    setCustomTime(seconds);
     timer.setTime(seconds);
     // Save to localStorage
     localStorage.setItem(STORAGE_KEY, seconds.toString());
@@ -186,12 +198,8 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
           <TimerPresets
             selectedTime={initialTime}
             onSelectPreset={handlePresetSelect}
-          />
-
-          {/* Custom Timer Input */}
-          <CustomTimerInput
-            currentTime={initialTime}
             onSetCustomTime={handleCustomTimeSet}
+            customTime={customTime}
           />
 
           {/* Todo List */}
