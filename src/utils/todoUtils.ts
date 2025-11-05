@@ -8,6 +8,8 @@ export interface TodoItem {
   createdAt: number;       // Timestamp when created
   completedAt?: number;    // Timestamp when completed (optional)
   order: number;           // Display order
+  sessionId?: number;      // Timer session when task was completed
+  timeSpent?: number;      // Time spent in seconds
 }
 
 const STORAGE_KEY = 'pomodoro_todos';
@@ -91,4 +93,31 @@ export const createTodo = (text: string): TodoItem => {
     createdAt: Date.now(),
     order: Date.now(), // Use timestamp for simple ordering
   };
+};
+
+/**
+ * Format time spent in seconds to a readable string
+ * @param seconds - Time in seconds
+ * @returns Formatted time string (e.g., "2m 30s", "1h 5m")
+ */
+export const formatTimeSpent = (seconds: number): string => {
+  if (seconds < 60) {
+    return `${seconds}s`;
+  }
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (hours > 0) {
+    if (minutes > 0) {
+      return `${hours}h ${minutes}m`;
+    }
+    return `${hours}h`;
+  }
+
+  if (secs > 0) {
+    return `${minutes}m ${secs}s`;
+  }
+  return `${minutes}m`;
 };

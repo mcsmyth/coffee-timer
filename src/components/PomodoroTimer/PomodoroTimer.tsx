@@ -109,7 +109,11 @@ export const PomodoroTimer: React.FC = () => {
           </CoffeeMug>
           
           {/* Todo List Panel - accessible during timer */}
-          <TodoListPanel isTimerRunning={timer.isRunning} />
+          <TodoListPanel
+            isTimerRunning={timer.isRunning}
+            sessionId={timer.sessionId}
+            isTimerActive={timer.isRunning}
+          />
           
           {/* Mute Button - top-right corner */}
           <FullScreenMuteButton />
@@ -174,7 +178,11 @@ export const PomodoroTimer: React.FC = () => {
 
           {/* Todo List */}
           <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <TodoList isTimerRunning={timer.isRunning} />
+            <TodoList
+              isTimerRunning={timer.isRunning}
+              sessionId={timer.sessionId}
+              isTimerActive={timer.isRunning}
+            />
           </div>
 
           {/* Settings Button */}

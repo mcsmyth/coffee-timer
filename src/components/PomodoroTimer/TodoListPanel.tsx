@@ -4,9 +4,15 @@ import { List, X } from 'lucide-react';
 
 interface TodoListPanelProps {
   isTimerRunning: boolean;
+  sessionId?: number;
+  isTimerActive?: boolean;
 }
 
-export const TodoListPanel: React.FC<TodoListPanelProps> = ({ isTimerRunning }) => {
+export const TodoListPanel: React.FC<TodoListPanelProps> = ({
+  isTimerRunning,
+  sessionId,
+  isTimerActive
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // Only show when timer is running
@@ -58,7 +64,11 @@ export const TodoListPanel: React.FC<TodoListPanelProps> = ({ isTimerRunning }) 
                    overflow-y-auto`}
       >
         <div className="p-6">
-          <TodoList isTimerRunning={isTimerRunning} />
+          <TodoList
+            isTimerRunning={isTimerRunning}
+            sessionId={sessionId}
+            isTimerActive={isTimerActive}
+          />
         </div>
       </div>
     </>
