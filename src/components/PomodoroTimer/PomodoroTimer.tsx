@@ -163,7 +163,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
             ☕ Caffeination
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Stay focused in your workflow with a cup of coffee, some lofi jazz, and some coffee shop vibes.
+            Stay focused in your workflow with a cup of coffee (or matcha), some lofi jazz, and some coffee shop vibes.
           </p>
         </div>
 
