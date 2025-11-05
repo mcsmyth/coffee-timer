@@ -141,7 +141,7 @@ export const PomodoroTimer: React.FC = () => {
             ☕ Caffeination
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Stay focused in your workflow with a cup of coffee and some lofi jazz and some coffee shop vibes.
+            Stay focused in your workflow with a cup of coffee, some lofi jazz, and some coffee shop vibes.
           </p>
         </div>
 
