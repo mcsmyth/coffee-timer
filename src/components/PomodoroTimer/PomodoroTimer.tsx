@@ -94,59 +94,142 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
 
   return (
     <>
-      {/* Coffee Shop Full Screen View when timer is running */}
-      {timer.isRunning && (
-        <div className="fixed inset-0 z-10">
-          <CoffeeMug
-            timeRemaining={timer.timeRemaining}
-            initialTime={initialTime}
-            isComplete={timer.isComplete}
-            isRunning={timer.isRunning}
-          >
-            {/* Mode Selector - Top Center */}
-            <div className="absolute top-5 left-1/2 transform -translate-x-1/2 z-20">
-              <ModeSelector
-                selectedTime={initialTime}
-                onSelectPreset={handlePresetSelect}
-              />
-            </div>
+      {/* Coffee Shop Full Screen View - Always visible */}
+      <div className="fixed inset-0 z-0">
+        <CoffeeMug
+          timeRemaining={timer.timeRemaining}
+          initialTime={initialTime}
+          isComplete={timer.isComplete}
+          isRunning={timer.isRunning}
+        >
+          {/* When timer is running - Centered layout */}
+          {timer.isRunning && (
+            <>
+              {/* Mode Selector - Top Center */}
+              <div className="absolute top-5 left-1/2 transform -translate-x-1/2 z-20">
+                <ModeSelector
+                  selectedTime={initialTime}
+                  onSelectPreset={handlePresetSelect}
+                />
+              </div>
 
-            {/* Timer Display - Centered */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-              <TimerDisplay
-                timeRemaining={timer.timeRemaining}
-                isComplete={timer.isComplete}
-                overlay={true}
-              />
-            </div>
+              {/* Timer Display - Centered */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                <TimerDisplay
+                  timeRemaining={timer.timeRemaining}
+                  isComplete={timer.isComplete}
+                  overlay={true}
+                />
+              </div>
 
-            {/* Timer Controls - Below Timer */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 z-20" style={{ marginTop: '180px' }}>
-              <TimerControls
-                isRunning={timer.isRunning}
-                isComplete={timer.isComplete}
-                onStart={timer.start}
-                onPause={timer.pause}
-                onReset={timer.reset}
-                overlay={true}
-              />
+              {/* Timer Controls - Below Timer */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 z-20" style={{ marginTop: '180px' }}>
+                <TimerControls
+                  isRunning={timer.isRunning}
+                  isComplete={timer.isComplete}
+                  onStart={timer.start}
+                  onPause={timer.pause}
+                  onReset={timer.reset}
+                  overlay={true}
+                />
+              </div>
+            </>
+          )}
+
+          {/* When timer is NOT running - Scrollable content layout */}
+          {!timer.isRunning && (
+            <div className="absolute inset-0 z-20 overflow-y-auto">
+              <div className="min-h-full flex flex-col items-center justify-center px-4 py-8">
+                {/* Header */}
+                <div className="text-center mb-8">
+                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg" style={{ textShadow: '0 4px 20px rgba(0, 0, 0, 0.8)' }}>
+                    ☕ Caffeination
+                  </h1>
+                  <p className="text-white text-lg drop-shadow-md" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.7)' }}>
+                    Stay focused in your workflow with a cup of coffee (or matcha), some lofi jazz, and some coffee shop vibes.
+                  </p>
+                </div>
+
+                {/* Content Container with semi-transparent background */}
+                <div className="w-full max-w-4xl">
+                  {/* Timer Display */}
+                  <div className="mb-6">
+                    <TimerDisplay
+                      timeRemaining={timer.timeRemaining}
+                      isComplete={timer.isComplete}
+                      overlay={true}
+                    />
+                  </div>
+
+                  {/* Timer Controls */}
+                  <div className="mb-6">
+                    <TimerControls
+                      isRunning={timer.isRunning}
+                      isComplete={timer.isComplete}
+                      onStart={timer.start}
+                      onPause={timer.pause}
+                      onReset={timer.reset}
+                      overlay={true}
+                    />
+                  </div>
+
+                  {/* Music Player */}
+                  <div className="mb-6">
+                    <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
+                  </div>
+
+                  {/* Timer Presets */}
+                  <div className="mb-8">
+                    <TimerPresets
+                      selectedTime={initialTime}
+                      onSelectPreset={handlePresetSelect}
+                      onSetCustomTime={handleCustomTimeSet}
+                      customTime={customTime}
+                    />
+                  </div>
+
+                  {/* Todo List */}
+                  <div className="mb-8">
+                    <TodoList
+                      isTimerRunning={timer.isRunning}
+                      sessionId={timer.sessionId}
+                      isTimerActive={timer.isRunning}
+                    />
+                  </div>
+
+                  {/* Settings and Analytics Buttons */}
+                  <div className="flex justify-center gap-4 pb-8">
+                    <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
+                    <button
+                      onClick={() => setShowAnalytics(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white text-gray-900 rounded-lg transition-colors duration-200 shadow-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+                      aria-label="View Analytics"
+                    >
+                      <BarChart3 className="w-5 h-5" />
+                      <span>Analytics</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </CoffeeMug>
-          
-          {/* Todo List Panel - accessible during timer */}
+          )}
+        </CoffeeMug>
+        
+        {/* Todo List Panel - accessible during timer */}
+        {timer.isRunning && (
           <TodoListPanel
             isTimerRunning={timer.isRunning}
             sessionId={timer.sessionId}
             isTimerActive={timer.isRunning}
           />
-          
-          {/* Mute Button - top-right corner */}
-          <FullScreenMuteButton />
-          
-          {/* Settings Button - bottom-right corner */}
-          <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
-        </div>
-      )}
+        )}
+        
+        {/* Mute Button - top-right corner */}
+        {timer.isRunning && <FullScreenMuteButton />}
+        
+        {/* Settings Button - bottom-right corner */}
+        <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
+      </div>
 
       {/* Settings Panel */}
       <SettingsPanel
@@ -155,76 +238,6 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
       />
-
-      {/* Standard Layout when timer is NOT running */}
-      <div className={`max-w-4xl mx-auto px-4 py-8 ${timer.isRunning ? 'opacity-0 pointer-events-none' : ''}`}>
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-            ☕ Caffeination
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Stay focused in your workflow with a cup of coffee (or matcha), some lofi jazz, and some coffee shop vibes.
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
-          {/* Coffee Shop Preview when timer is not running */}
-          <CoffeeMug
-            timeRemaining={timer.timeRemaining}
-            initialTime={initialTime}
-            isComplete={timer.isComplete}
-            isRunning={false}
-          />
-
-          {/* Timer Display - shown when NOT running */}
-          <TimerDisplay
-            timeRemaining={timer.timeRemaining}
-            isComplete={timer.isComplete}
-          />
-
-          {/* Timer Controls - shown when NOT running */}
-          <TimerControls
-            isRunning={timer.isRunning}
-            isComplete={timer.isComplete}
-            onStart={timer.start}
-            onPause={timer.pause}
-            onReset={timer.reset}
-          />
-
-          {/* Music Player */}
-          <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
-
-          {/* Timer Presets */}
-          <TimerPresets
-            selectedTime={initialTime}
-            onSelectPreset={handlePresetSelect}
-            onSetCustomTime={handleCustomTimeSet}
-            customTime={customTime}
-          />
-
-          {/* Todo List */}
-          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <TodoList
-              isTimerRunning={timer.isRunning}
-              sessionId={timer.sessionId}
-              isTimerActive={timer.isRunning}
-            />
-          </div>
-
-          {/* Settings and Analytics Buttons */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-center gap-4">
-            <SettingsButton onClick={() => setIsSettingsOpen(true)} />
-            <button
-              onClick={() => setShowAnalytics(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              aria-label="View Analytics"
-            >
-              <BarChart3 className="w-5 h-5" />
-              <span>Analytics</span>
-            </button>
-          </div>
-        </div>
-      </div>
     </>
   );
 };

@@ -25,7 +25,11 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, isCom
         style={
           overlay && !isComplete
             ? {
-                textShadow: '0 4px 20px rgba(0, 0, 0, 0.9), 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.5)',
+                textShadow: '0 6px 30px rgba(0, 0, 0, 0.95), 0 4px 15px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 0, 0, 0.7), 0 0 100px rgba(0, 0, 0, 0.5)',
+              }
+            : overlay && isComplete
+            ? {
+                textShadow: '0 6px 30px rgba(0, 0, 0, 0.95), 0 4px 15px rgba(239, 68, 68, 0.8), 0 0 60px rgba(239, 68, 68, 0.6)',
               }
             : undefined
         }
@@ -35,11 +39,11 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, isCom
       {isComplete && (
         <p
           className={`mt-4 text-xl md:text-2xl font-semibold animate-bounce ${
-            overlay ? 'text-red-300' : 'text-red-500'
+            overlay ? 'text-red-200' : 'text-red-500'
           }`}
           style={
             overlay
-              ? { textShadow: '0 2px 12px rgba(0, 0, 0, 0.9), 0 4px 20px rgba(239, 68, 68, 0.5)' }
+              ? { textShadow: '0 4px 20px rgba(0, 0, 0, 0.95), 0 2px 10px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.6)' }
               : undefined
           }
         >

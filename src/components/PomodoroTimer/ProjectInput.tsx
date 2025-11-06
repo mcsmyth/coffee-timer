@@ -47,11 +47,12 @@ export const ProjectInput: React.FC<ProjectInputProps> = ({ onAddProject, disabl
         onClick={() => setIsExpanded(true)}
         disabled={disabled}
         className="flex items-center gap-2 px-3 py-2 text-sm 
-                   text-blue-600 dark:text-blue-400 
-                   hover:bg-blue-50 dark:hover:bg-blue-900/20 
-                   rounded-lg transition-colors duration-200
+                   text-white border border-white/30
+                   bg-black/60 hover:bg-black/70 backdrop-blur-sm
+                   rounded-lg transition-colors duration-200 shadow-lg
                    disabled:opacity-50 disabled:cursor-not-allowed
                    focus:outline-none focus:ring-2 focus:ring-blue-500"
+        style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
         aria-label="Create new project"
       >
         <FolderPlus className="w-4 h-4" />
@@ -77,19 +78,19 @@ export const ProjectInput: React.FC<ProjectInputProps> = ({ onAddProject, disabl
         disabled={disabled}
         maxLength={MAX_PROJECT_NAME_LENGTH}
         autoFocus
-        className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg 
-                   bg-white dark:bg-gray-700 
-                   text-gray-900 dark:text-gray-100
+        className="flex-1 px-3 py-2 text-sm border border-white/30 rounded-lg 
+                   bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
+                   text-gray-900 dark:text-gray-100 shadow-lg
                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   placeholder-gray-400 dark:placeholder-gray-500"
+                   placeholder-gray-500 dark:placeholder-gray-400"
         aria-label="Project name"
       />
       <button
         onClick={handleSubmit}
         disabled={isDisabled}
         className="px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed
-                   text-white rounded-lg text-sm
+                   text-white rounded-lg text-sm shadow-lg backdrop-blur-sm
                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                    transition-colors duration-200
                    flex items-center gap-2"
@@ -103,10 +104,11 @@ export const ProjectInput: React.FC<ProjectInputProps> = ({ onAddProject, disabl
           setInputValue('');
           setIsExpanded(false);
         }}
-        className="px-3 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600
-                   text-gray-700 dark:text-gray-300 rounded-lg text-sm
+        className="px-3 py-2 bg-black/60 hover:bg-black/70 dark:bg-black/60 dark:hover:bg-black/70
+                   text-white rounded-lg text-sm shadow-lg backdrop-blur-sm border border-white/30
                    focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
                    transition-colors duration-200"
+        style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
         aria-label="Cancel"
       >
         Cancel

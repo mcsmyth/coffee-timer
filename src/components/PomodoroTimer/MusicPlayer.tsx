@@ -231,7 +231,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
     <div className="flex flex-col items-center mt-4 gap-2">
       {/* Current song info */}
       {!hasError && currentSong && (
-        <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
+        <div className="text-xs text-white text-center drop-shadow-md" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.7)' }}>
           {currentSong.title || currentSong.filename}
           {showPlaylistControls && (
             <span className="ml-2">
@@ -245,11 +245,12 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
       <div className="flex items-center gap-2">
         <button
           onClick={toggleMute}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 shadow-lg backdrop-blur-sm ${
             isMuted || hasError
-              ? 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
-              : 'bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-300'
+              ? 'bg-black/60 hover:bg-black/70 text-white border border-white/30'
+              : 'bg-blue-500/90 hover:bg-blue-600/90 text-white border border-white/30'
           }`}
+          style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
           aria-label={isMuted ? 'Unmute music' : 'Mute music'}
           title={hasError ? 'Music track not available. Check console for details.' : (isMuted ? 'Unmute music' : 'Mute music')}
         >
@@ -272,7 +273,8 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
         {showPlaylistControls && !hasError && (
           <button
             onClick={skipToNextSong}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 bg-black/60 hover:bg-black/70 text-white border border-white/30 shadow-lg backdrop-blur-sm"
+            style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
             aria-label="Skip to next song"
             title="Skip to next song"
           >

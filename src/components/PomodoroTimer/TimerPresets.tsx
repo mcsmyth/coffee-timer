@@ -94,11 +94,16 @@ export const TimerPresets: React.FC<TimerPresetsProps> = ({
           <button
             key={preset.label}
             onClick={() => onSelectPreset(seconds)}
-            className={`px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-md ${
+            className={`px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-lg backdrop-blur-sm ${
               isSelected
-                ? `${preset.color} ring-4 ring-offset-2 ring-offset-white dark:ring-offset-gray-800 ring-gray-400 scale-105`
-                : `${preset.color} opacity-80 hover:opacity-100`
+                ? `${preset.color} ring-4 ring-offset-2 ring-offset-white/50 dark:ring-offset-black/50 ring-white/50 scale-105 opacity-100`
+                : `${preset.color} opacity-90 hover:opacity-100`
             }`}
+            style={
+              isSelected
+                ? { textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }
+                : { textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }
+            }
             aria-label={`Set timer to ${preset.minutes} minutes`}
           >
             <div className="text-sm font-medium">{preset.label}</div>
@@ -109,11 +114,12 @@ export const TimerPresets: React.FC<TimerPresetsProps> = ({
       
       {/* Custom Timer Button */}
       <div
-        className={`px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-md ${
+        className={`px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-lg backdrop-blur-sm ${
           isCustomSelected
-            ? 'bg-teal-500 ring-4 ring-offset-2 ring-offset-white dark:ring-offset-gray-800 ring-gray-400 scale-105'
-            : 'bg-teal-500 hover:bg-teal-600 opacity-80 hover:opacity-100'
+            ? 'bg-teal-500 ring-4 ring-offset-2 ring-offset-white/50 dark:ring-offset-black/50 ring-white/50 scale-105 opacity-100'
+            : 'bg-teal-500 hover:bg-teal-600 opacity-90 hover:opacity-100'
         }`}
+        style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
       >
         {isEditingCustom ? (
           <form onSubmit={handleCustomSubmit} className="h-full flex flex-col justify-center">

@@ -52,19 +52,19 @@ export const TodoInput: React.FC<TodoInputProps> = ({ onAddTodo, projects = [], 
           placeholder="Add a new task..."
           disabled={disabled}
           maxLength={MAX_TODO_LENGTH}
-          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
-                     bg-white dark:bg-gray-700 
+          className="flex-1 px-4 py-2 border border-white/30 rounded-lg 
+                     bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
                      text-gray-900 dark:text-gray-100
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                      disabled:opacity-50 disabled:cursor-not-allowed
-                     placeholder-gray-400 dark:placeholder-gray-500"
+                     placeholder-gray-500 dark:placeholder-gray-400 shadow-lg"
           aria-label="Add a new task"
         />
         <button
           onClick={handleSubmit}
           disabled={isDisabled}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed
-                     text-white rounded-lg
+                     text-white rounded-lg shadow-lg backdrop-blur-sm
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                      transition-colors duration-200
                      flex items-center gap-2"

@@ -362,12 +362,12 @@ export const TodoList: React.FC<TodoListProps> = ({
     <div className="w-full">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <CheckSquare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+        <CheckSquare className="w-5 h-5 text-white drop-shadow-md" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.7)' }} />
+        <h2 className="text-xl font-semibold text-white drop-shadow-lg" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)' }}>
           Todo List
         </h2>
         {todos.length > 0 && (
-          <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
+          <span className="ml-auto text-sm text-white/90 drop-shadow-md" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.7)' }}>
             {totalActiveCount} active
             {totalCompletedCount > 0 && ` • ${totalCompletedCount} completed`}
           </span>
@@ -390,8 +390,8 @@ export const TodoList: React.FC<TodoListProps> = ({
 
       {/* Todo List */}
       {todos.length === 0 && projects.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-          <CheckSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
+        <div className="text-center py-8 text-white/90 drop-shadow-md" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.7)' }}>
+          <CheckSquare className="w-12 h-12 mx-auto mb-2 opacity-70" />
           <p>No tasks yet. Create a project or add a task above to get started!</p>
         </div>
       ) : (
@@ -404,9 +404,9 @@ export const TodoList: React.FC<TodoListProps> = ({
             const hasTodos = projectTodos.length > 0;
 
             return (
-              <div key={project.id} className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800/50">
+              <div key={project.id} className="border border-white/30 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg">
                 {/* Project Header */}
-                <div className="flex items-center gap-2 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-t-lg">
+                <div className="flex items-center gap-2 p-3 hover:bg-white/80 dark:hover:bg-gray-700/50 rounded-t-lg">
                   <button
                     onClick={() => toggleProjectExpansion(project.id)}
                     className="flex items-center gap-2 flex-1 text-left"
@@ -501,9 +501,9 @@ export const TodoList: React.FC<TodoListProps> = ({
 
           {/* Tasks without Project */}
           {(activeTodosWithoutProject.length > 0 || completedTodosWithoutProject.length > 0) && (
-            <div className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800/50">
-              <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <div className="border border-white/30 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg">
+              <div className="p-3 border-b border-white/30 dark:border-gray-700">
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                   No Project ({activeTodosWithoutProject.length} active
                   {completedTodosWithoutProject.length > 0 && `, ${completedTodosWithoutProject.length} completed`})
                 </h3>
