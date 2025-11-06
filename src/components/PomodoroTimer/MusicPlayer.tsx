@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Volume2, VolumeX, SkipForward } from 'lucide-react';
 import { MUSIC_PLAYLIST, getSongUrl } from '../../config/musicPlaylist';
-import { getSelectedSongIndex } from '../../utils/settingsUtils';
+import { getSelectedSongIndex, setSelectedSongIndex } from '../../utils/settingsUtils';
 
 interface MusicPlayerProps {
   isRunning: boolean;
@@ -53,6 +53,8 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
     const nextIndex = (currentSongIndex + 1) % MUSIC_PLAYLIST.length;
     console.log(`Moving to next song: ${MUSIC_PLAYLIST[nextIndex].title || MUSIC_PLAYLIST[nextIndex].filename} (${nextIndex + 1}/${MUSIC_PLAYLIST.length})`);
     setCurrentSongIndex(nextIndex);
+    // Save to localStorage and dispatch event so all instances sync
+    setSelectedSongIndex(nextIndex);
   }, [currentSongIndex]);
 
   // Function to skip to next song manually

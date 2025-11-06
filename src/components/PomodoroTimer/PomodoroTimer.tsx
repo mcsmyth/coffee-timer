@@ -231,6 +231,11 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
         <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
       </div>
 
+      {/* Music Player - Always rendered for playback control (hidden, positioned correctly in non-running view) */}
+      <div className="hidden">
+        <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
+      </div>
+
       {/* Settings Panel */}
       <SettingsPanel
         isOpen={isSettingsOpen}
