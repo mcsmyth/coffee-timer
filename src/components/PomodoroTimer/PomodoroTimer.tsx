@@ -52,25 +52,49 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
   const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
   const timer = usePomodoroTimer(initialTime);
 
+  // Reusable AudioContext to prevent memory leaks
+  const audioContextRef = React.useRef<AudioContext | null>(null);
+
+  // Initialize AudioContext once
+  useEffect(() => {
+    return () => {
+      // Cleanup AudioContext on unmount
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    };
+  }, []);
+
   // Play notification sound when timer completes
   useEffect(() => {
     if (timer.isComplete) {
-      // Create a simple beep sound
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      // Create AudioContext lazily on first use
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+
+      const audioContext = audioContextRef.current;
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       oscillator.frequency.value = 800;
       oscillator.type = 'sine';
-      
+
       gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
+
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.5);
+
+      // Disconnect nodes after sound completes to free memory
+      setTimeout(() => {
+        oscillator.disconnect();
+        gainNode.disconnect();
+      }, 600);
     }
   }, [timer.isComplete]);
 
@@ -96,12 +120,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
     <>
       {/* Coffee Shop Full Screen View - Always visible */}
       <div className="fixed inset-0 z-0">
-        <CoffeeMug
-          timeRemaining={timer.timeRemaining}
-          initialTime={initialTime}
-          isComplete={timer.isComplete}
-          isRunning={timer.isRunning}
-        >
+        <CoffeeMug>
           {/* When timer is running - Centered layout */}
           {timer.isRunning && (
             <>
@@ -229,11 +248,6 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
         
         {/* Settings Button - bottom-right corner */}
         <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
-      </div>
-
-      {/* Music Player - Always rendered for playback control (hidden, positioned correctly in non-running view) */}
-      <div className="hidden">
-        <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
       </div>
 
       {/* Settings Panel */}

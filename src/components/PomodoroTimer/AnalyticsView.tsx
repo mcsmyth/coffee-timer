@@ -40,9 +40,17 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ onBack }) => {
 
   useEffect(() => {
     refreshData();
-    // Refresh data every 5 seconds in case todos are updated
-    const interval = setInterval(refreshData, 5000);
-    return () => clearInterval(interval);
+
+    // Listen for todo updates instead of polling
+    const handleTodosUpdated = () => {
+      refreshData();
+    };
+
+    window.addEventListener('todosUpdated', handleTodosUpdated as EventListener);
+
+    return () => {
+      window.removeEventListener('todosUpdated', handleTodosUpdated as EventListener);
+    };
   }, []);
 
   // Load selected image from settings

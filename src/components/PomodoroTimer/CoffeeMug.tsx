@@ -3,18 +3,10 @@ import { getImageById, getCoffeeShopImageUrl } from '../../config/coffeeShopImag
 import { getSelectedCoffeeShopImageId } from '../../utils/settingsUtils';
 
 interface CoffeeMugProps {
-  timeRemaining: number;
-  initialTime: number;
-  isComplete: boolean;
-  isRunning: boolean;
   children?: React.ReactNode;
 }
 
 export const CoffeeMug: React.FC<CoffeeMugProps> = ({
-  timeRemaining,
-  initialTime,
-  isComplete,
-  isRunning,
   children,
 }) => {
   const [imagePath, setImagePath] = useState<string>('');

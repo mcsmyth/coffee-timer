@@ -91,20 +91,25 @@ export const getTaskAnalytics = (): TaskAnalytics[] => {
 
   todos.forEach((todo) => {
     if (todo.completed && todo.timeSpent !== undefined && todo.timeSpent > 0) {
-      const existing = taskMap.get(todo.text) || {
-        taskName: todo.text,
-        totalTimeSpent: 0,
-        completionCount: 0,
-        lastCompleted: undefined,
-      };
+      // Normalize task name for grouping (case-insensitive, trimmed)
+      const normalizedKey = todo.text.toLowerCase().trim();
+      const existing = taskMap.get(normalizedKey);
 
-      existing.totalTimeSpent += todo.timeSpent;
-      existing.completionCount += 1;
-      if (!existing.lastCompleted || (todo.completedAt && todo.completedAt > existing.lastCompleted)) {
-        existing.lastCompleted = todo.completedAt;
+      if (existing) {
+        existing.totalTimeSpent += todo.timeSpent;
+        existing.completionCount += 1;
+        if (!existing.lastCompleted || (todo.completedAt && todo.completedAt > existing.lastCompleted)) {
+          existing.lastCompleted = todo.completedAt;
+        }
+      } else {
+        // Use the original text for display (preserve the first occurrence's casing)
+        taskMap.set(normalizedKey, {
+          taskName: todo.text,
+          totalTimeSpent: todo.timeSpent,
+          completionCount: 1,
+          lastCompleted: todo.completedAt,
+        });
       }
-
-      taskMap.set(todo.text, existing);
     }
   });
 

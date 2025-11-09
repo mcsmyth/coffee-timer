@@ -38,17 +38,6 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
       return;
     }
 
-    if (timeRemaining <= 0) {
-      setIsRunning(false);
-      setIsComplete(true);
-      wasCompleteRef.current = true;
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      return;
-    }
-
     intervalRef.current = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
@@ -67,7 +56,7 @@ export const usePomodoroTimer = (initialTime: number = 1500): UsePomodoroTimerRe
         intervalRef.current = null;
       }
     };
-  }, [isRunning, timeRemaining]);
+  }, [isRunning]);
 
   const start = useCallback(() => {
     // Increment sessionId if starting a new session

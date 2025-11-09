@@ -81,17 +81,12 @@ export const TodoList: React.FC<TodoListProps> = ({
   const loadInitialData = () => {
     const loadedTodos = loadTodos();
     const loadedProjects = loadProjects();
-    
+
     // Always update state, even if it seems the same, to ensure fresh data
     setTodos(loadedTodos);
     setProjects(loadedProjects);
     // Expand all projects by default
     setExpandedProjects(new Set(loadedProjects.map(p => p.id)));
-  };
-  
-  // Expose reload function for manual refresh (can be called via ref if needed)
-  const reloadData = () => {
-    loadInitialData();
   };
 
   // Load todos and projects from localStorage on mount
