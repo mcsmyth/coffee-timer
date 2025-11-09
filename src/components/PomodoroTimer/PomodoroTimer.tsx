@@ -192,11 +192,6 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
                     />
                   </div>
 
-                  {/* Music Player */}
-                  <div className="mb-6">
-                    <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
-                  </div>
-
                   {/* Timer Presets */}
                   <div className="mb-8">
                     <TimerPresets
@@ -232,7 +227,16 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
               </div>
             </div>
           )}
+
         </CoffeeMug>
+
+        {/* Music Player - Always mounted outside conditionals to maintain audio playback */}
+        {/* Hidden when timer is running (use opacity instead of display:none to keep audio playing) */}
+        <div className={`fixed bottom-32 inset-x-0 z-30 transition-opacity duration-300 ${timer.isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          <div className="flex justify-center">
+            <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
+          </div>
+        </div>
         
         {/* Todo List Panel - accessible during timer */}
         {timer.isRunning && (
