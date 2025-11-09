@@ -193,10 +193,11 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
 
   // Skip to next song when a new timer session starts
   useEffect(() => {
-    // Skip the initial mount (sessionId = 0) and only trigger on actual session changes
-    // SessionId increments: 0 (initial) -> 1 (first start) -> 2 (second start), etc.
+    // Skip the initial mount (sessionId = 0) and first timer start (sessionId = 1)
+    // Only advance song on subsequent timer starts (sessionId >= 2)
+    // SessionId increments: 0 (initial) -> 1 (first start, play selected song) -> 2 (second start, advance song)
     // Also only trigger if we have multiple songs
-    if (sessionId > 0 && MUSIC_PLAYLIST.length > 1) {
+    if (sessionId > 1 && MUSIC_PLAYLIST.length > 1) {
       console.log(`New timer session detected (session ${sessionId}), selecting next song`);
       playNextSong();
     }
