@@ -158,7 +158,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
           {/* When timer is NOT running - Scrollable content layout */}
           {!timer.isRunning && (
             <div className="absolute inset-0 z-20 overflow-y-auto">
-              <div className="min-h-full flex flex-col items-center justify-center px-4 py-8">
+              <div className="min-h-full flex flex-col items-center justify-center px-4 py-8 pb-48">
                 {/* Header */}
                 <div className="text-center mb-8">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg" style={{ textShadow: '0 4px 20px rgba(0, 0, 0, 0.8)' }}>
