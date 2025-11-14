@@ -1,5 +1,6 @@
 import React from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { MusicPlayer } from './MusicPlayer';
 
 interface TimerControlsProps {
   isRunning: boolean;
@@ -8,6 +9,7 @@ interface TimerControlsProps {
   onPause: () => void;
   onReset: () => void;
   overlay?: boolean;
+  sessionId?: number; // For MusicPlayer
 }
 
 export const TimerControls: React.FC<TimerControlsProps> = ({
@@ -17,11 +19,12 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
   onPause,
   onReset,
   overlay = false,
+  sessionId = 0,
 }) => {
   if (overlay) {
     // Floating button style for full-screen mode
     return (
-      <div className="flex justify-center gap-3">
+      <div className="flex justify-center items-center gap-3">
         {!isRunning ? (
           <button
             onClick={onStart}
@@ -46,6 +49,8 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
         >
           <RotateCcw size={24} />
         </button>
+        {/* Music Player controls - compact mode */}
+        <MusicPlayer isRunning={isRunning} sessionId={sessionId} compact={true} />
       </div>
     );
   }

@@ -6,11 +6,12 @@ import { getSelectedSongIndex, setSelectedSongIndex } from '../../utils/settings
 interface MusicPlayerProps {
   isRunning: boolean;
   sessionId: number; // Changes when a new timer session starts
+  compact?: boolean; // Compact mode for inline display with timer controls
 }
 
 const MUTE_STORAGE_KEY = 'pomodoro_music_muted';
 
-export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }) => {
+export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId, compact = false }) => {
   // Load mute state from localStorage
   const getInitialMuteState = (): boolean => {
     const saved = localStorage.getItem(MUTE_STORAGE_KEY);
@@ -231,6 +232,44 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId }
   const currentSong = MUSIC_PLAYLIST[currentSongIndex];
   const showPlaylistControls = MUSIC_PLAYLIST.length > 1;
 
+  // Compact mode - matches TimerControls button style
+  if (compact) {
+    return (
+      <div className="flex items-center gap-3">
+        {/* Mute/Unmute button - matches timer control button style */}
+        <button
+          onClick={toggleMute}
+          className={`flex items-center justify-center gap-2 w-14 h-14 rounded-full transition-all duration-200 shadow-xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 ${
+            isMuted || hasError
+              ? 'bg-black/80 hover:bg-black/90 text-white'
+              : 'bg-blue-500/90 hover:bg-blue-600/90 text-white'
+          }`}
+          aria-label={isMuted ? 'Unmute music' : 'Mute music'}
+          title={hasError ? 'Music track not available' : (isMuted ? 'Unmute music' : 'Mute music') + (currentSong ? ` - ${currentSong.title || currentSong.filename}` : '')}
+        >
+          {isMuted || hasError ? (
+            <VolumeX size={24} />
+          ) : (
+            <Volume2 size={24} />
+          )}
+        </button>
+
+        {/* Skip button - only show if there are multiple songs */}
+        {showPlaylistControls && !hasError && (
+          <button
+            onClick={skipToNextSong}
+            className="flex items-center justify-center gap-2 w-14 h-14 rounded-full bg-black/80 hover:bg-black/90 text-white transition-all duration-200 shadow-xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
+            aria-label="Skip to next song"
+            title={`Skip to next song${currentSong ? ` - Currently: ${currentSong.title || currentSong.filename} (${currentSongIndex + 1}/${MUSIC_PLAYLIST.length})` : ''}`}
+          >
+            <SkipForward size={24} />
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // Full mode - original layout
   return (
     <div className="flex flex-col items-center mt-4 gap-2">
       {/* Current song info */}

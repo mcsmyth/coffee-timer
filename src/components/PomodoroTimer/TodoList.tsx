@@ -15,20 +15,14 @@ import {
 } from '@dnd-kit/sortable';
 import { 
   TodoItem, 
-  Project,
   loadTodos, 
   saveTodos, 
   createTodo,
-  loadProjects,
-  saveProjects,
-  createProject,
-  deleteProjectFromTodos,
   reorderTodos
 } from '../../utils/todoUtils';
 import { TodoInput } from './TodoInput';
 import { TodoItem as TodoItemComponent } from './TodoItem';
-import { ProjectInput } from './ProjectInput';
-import { CheckSquare, Folder, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { CheckSquare } from 'lucide-react';
 
 interface TodoListProps {
   isTimerRunning?: boolean;
@@ -49,22 +43,7 @@ export const TodoList: React.FC<TodoListProps> = ({
       return [];
     }
   });
-  const [projects, setProjects] = useState<Project[]>(() => {
-    try {
-      return loadProjects();
-    } catch {
-      return [];
-    }
-  });
   const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
-  const [expandedProjects, setExpandedProjects] = useState<Set<string>>(() => {
-    try {
-      const loadedProjects = loadProjects();
-      return new Set(loadedProjects.map(p => p.id));
-    } catch {
-      return new Set();
-    }
-  });
   
   // Use refs to track if we're updating from an event to prevent save loops
   const isUpdatingFromEvent = useRef<boolean>(false);
@@ -77,19 +56,14 @@ export const TodoList: React.FC<TodoListProps> = ({
     })
   );
 
-  // Load todos and projects from localStorage on mount and when timer starts
+  // Load todos from localStorage on mount and when timer starts
   const loadInitialData = () => {
     const loadedTodos = loadTodos();
-    const loadedProjects = loadProjects();
-
     // Always update state, even if it seems the same, to ensure fresh data
     setTodos(loadedTodos);
-    setProjects(loadedProjects);
-    // Expand all projects by default
-    setExpandedProjects(new Set(loadedProjects.map(p => p.id)));
   };
 
-  // Load todos and projects from localStorage on mount
+  // Load todos from localStorage on mount
   useEffect(() => {
     // Load immediately on mount
     loadInitialData();
@@ -127,34 +101,10 @@ export const TodoList: React.FC<TodoListProps> = ({
       }
     };
 
-    const handleProjectsUpdated = (e: CustomEvent<Project[]>) => {
-      if (e.detail && Array.isArray(e.detail)) {
-        // Only update if the data actually changed to prevent unnecessary re-renders
-        setProjects((prevProjects) => {
-          const prevSorted = [...prevProjects].sort((a, b) => a.id.localeCompare(b.id));
-          const newSorted = [...e.detail].sort((a, b) => a.id.localeCompare(b.id));
-          const prevStr = JSON.stringify(prevSorted);
-          const newStr = JSON.stringify(newSorted);
-          
-          if (prevStr !== newStr) {
-            return e.detail;
-          }
-          return prevProjects;
-        });
-        setExpandedProjects((prev) => {
-          const newSet = new Set(prev);
-          e.detail.forEach(p => newSet.add(p.id));
-          return newSet;
-        });
-      }
-    };
-
     window.addEventListener('todosUpdated', handleTodosUpdated as EventListener);
-    window.addEventListener('projectsUpdated', handleProjectsUpdated as EventListener);
     
     return () => {
       window.removeEventListener('todosUpdated', handleTodosUpdated as EventListener);
-      window.removeEventListener('projectsUpdated', handleProjectsUpdated as EventListener);
     };
   }, []);
 
@@ -192,11 +142,6 @@ export const TodoList: React.FC<TodoListProps> = ({
     saveTodos(todos);
   }, [todos]);
 
-  // Save projects to localStorage whenever projects change
-  useEffect(() => {
-    // Always save, even if empty
-    saveProjects(projects);
-  }, [projects]);
 
   // Track timer session start time
   useEffect(() => {
@@ -205,73 +150,25 @@ export const TodoList: React.FC<TodoListProps> = ({
     }
   }, [sessionId, isTimerActive]);
 
-  const handleAddTodo = (text: string, projectId?: string) => {
-    const newTodo = createTodo(text, projectId);
+  const handleAddTodo = (text: string) => {
+    const newTodo = createTodo(text);
     setTodos((prevTodos) => [...prevTodos, newTodo]);
-    // Expand the project if a task was added to it
-    if (projectId && !expandedProjects.has(projectId)) {
-      setExpandedProjects((prev) => {
-        const newSet = new Set(prev);
-        newSet.add(projectId);
-        return newSet;
-      });
-    }
-  };
-
-  const handleAddProject = (name: string) => {
-    const newProject = createProject(name);
-    setProjects((prevProjects) => [...prevProjects, newProject]);
-    setExpandedProjects((prev) => {
-      const newSet = new Set(prev);
-      newSet.add(newProject.id);
-      return newSet;
-    });
-  };
-
-  const handleDeleteProject = (projectId: string) => {
-    // Remove projectId from todos
-    const updatedTodos = deleteProjectFromTodos(projectId, todos);
-    setTodos(updatedTodos);
-    // Remove project
-    setProjects((prevProjects) => prevProjects.filter(p => p.id !== projectId));
-    setExpandedProjects((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(projectId);
-      return newSet;
-    });
-  };
-
-  const toggleProjectExpansion = (projectId: string) => {
-    setExpandedProjects((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(projectId)) {
-        newSet.delete(projectId);
-      } else {
-        newSet.add(projectId);
-      }
-      return newSet;
-    });
   };
 
   // Handle drag end for reordering todos
-  const handleDragEnd = (event: DragEndEvent, groupId: string, isCompleted: boolean) => {
+  const handleDragEnd = (event: DragEndEvent, isCompleted: boolean) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) {
       return;
     }
 
-    // Find the dragged todo to determine its group
+    // Find the dragged todo
     const draggedTodo = todos.find((t) => t.id === active.id);
     if (!draggedTodo) return;
 
-    // Determine which todos belong to this group
-    const groupTodos = todos.filter((t) => {
-      const sameProject = groupId === 'none' 
-        ? !t.projectId 
-        : t.projectId === groupId;
-      return sameProject && t.completed === isCompleted;
-    });
+    // Determine which todos belong to this group (active or completed)
+    const groupTodos = todos.filter((t) => t.completed === isCompleted);
 
     const oldIndex = groupTodos.findIndex((todo) => todo.id === active.id);
     const newIndex = groupTodos.findIndex((todo) => todo.id === over.id);
@@ -324,24 +221,6 @@ export const TodoList: React.FC<TodoListProps> = ({
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
-  // Separate todos by project
-  const todosByProject = new Map<string, TodoItem[]>();
-  const todosWithoutProject: TodoItem[] = [];
-
-  todos.forEach(todo => {
-    if (todo.projectId) {
-      if (!todosByProject.has(todo.projectId)) {
-        todosByProject.set(todo.projectId, []);
-      }
-      todosByProject.get(todo.projectId)!.push(todo);
-    } else {
-      todosWithoutProject.push(todo);
-    }
-  });
-
-  // Sort projects
-  const sortedProjects = [...projects].sort((a, b) => a.name.localeCompare(b.name));
-
   // Helper to separate active and completed todos
   const separateTodos = (todoList: TodoItem[]) => {
     const active = todoList.filter(t => !t.completed).sort((a, b) => b.order - a.order);
@@ -349,7 +228,7 @@ export const TodoList: React.FC<TodoListProps> = ({
     return { active, completed };
   };
 
-  const { active: activeTodosWithoutProject, completed: completedTodosWithoutProject } = separateTodos(todosWithoutProject);
+  const { active: activeTodos, completed: completedTodos } = separateTodos(todos);
   const totalActiveCount = todos.filter(t => !t.completed).length;
   const totalCompletedCount = todos.filter(t => t.completed).length;
 
@@ -369,198 +248,78 @@ export const TodoList: React.FC<TodoListProps> = ({
         )}
       </div>
 
-      {/* Project Input */}
-      <div className="mb-4">
-        <ProjectInput onAddProject={handleAddProject} disabled={false} />
-      </div>
-
       {/* Todo Input */}
       <div className="mb-4">
         <TodoInput 
           onAddTodo={handleAddTodo} 
-          projects={projects}
           disabled={false} 
         />
       </div>
 
       {/* Todo List */}
-      {todos.length === 0 && projects.length === 0 ? (
+      {todos.length === 0 ? (
         <div className="text-center py-8 text-white/90 drop-shadow-md" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.7)' }}>
           <CheckSquare className="w-12 h-12 mx-auto mb-2 opacity-70" />
-          <p>No tasks yet. Create a project or add a task above to get started!</p>
+          <p>No tasks yet. Add a task above to get started!</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {/* Projects */}
-          {sortedProjects.map((project) => {
-            const projectTodos = todosByProject.get(project.id) || [];
-            const { active, completed } = separateTodos(projectTodos);
-            const isExpanded = expandedProjects.has(project.id);
-            const hasTodos = projectTodos.length > 0;
-
-            return (
-              <div key={project.id} className="border border-white/30 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg">
-                {/* Project Header */}
-                <div className="flex items-center gap-2 p-3 hover:bg-white/80 dark:hover:bg-gray-700/50 rounded-t-lg">
-                  <button
-                    onClick={() => toggleProjectExpansion(project.id)}
-                    className="flex items-center gap-2 flex-1 text-left"
-                    disabled={!hasTodos}
-                  >
-                    {hasTodos ? (
-                      isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-gray-500" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-500" />
-                      )
-                    ) : (
-                      <div className="w-4 h-4" />
-                    )}
-                    <Folder className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">{project.name}</span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      ({active.length} active{completed.length > 0 && `, ${completed.length} completed`})
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProject(project.id)}
-                    className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-                    aria-label={`Delete project ${project.name}`}
-                  >
-                    <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
-                  </button>
-                </div>
-
-                {/* Project Tasks */}
-                {isExpanded && hasTodos && (
-                  <div className="px-3 pb-3 space-y-3">
-                    {/* Active Tasks */}
-                    {active.length > 0 && (
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={(e) => handleDragEnd(e, project.id, false)}
-                      >
-                        <SortableContext
-                          items={active.map((t) => t.id)}
-                          strategy={verticalListSortingStrategy}
-                        >
-                          <div className="max-h-48 overflow-y-auto space-y-1">
-                            {active.map((todo) => (
-                              <TodoItemComponent
-                                key={todo.id}
-                                todo={todo}
-                                onToggle={handleToggleTodo}
-                                onDelete={handleDeleteTodo}
-                              />
-                            ))}
-                          </div>
-                        </SortableContext>
-                      </DndContext>
-                    )}
-
-                    {/* Completed Tasks */}
-                    {completed.length > 0 && (
-                      <div>
-                        <h4 className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1 px-1">
-                          Completed
-                        </h4>
-                        <DndContext
-                          sensors={sensors}
-                          collisionDetection={closestCenter}
-                          onDragEnd={(e) => handleDragEnd(e, project.id, true)}
-                        >
-                          <SortableContext
-                            items={completed.map((t) => t.id)}
-                            strategy={verticalListSortingStrategy}
-                          >
-                            <div className="max-h-32 overflow-y-auto space-y-1">
-                              {completed.map((todo) => (
-                                <TodoItemComponent
-                                  key={todo.id}
-                                  todo={todo}
-                                  onToggle={handleToggleTodo}
-                                  onDelete={handleDeleteTodo}
-                                />
-                              ))}
-                            </div>
-                          </SortableContext>
-                        </DndContext>
-                      </div>
-                    )}
+        <div className="border border-white/30 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg">
+          <div className="p-3 space-y-3">
+            {/* Active Tasks */}
+            {activeTodos.length > 0 && (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={(e) => handleDragEnd(e, false)}
+              >
+                <SortableContext
+                  items={activeTodos.map((t) => t.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="max-h-48 overflow-y-auto space-y-1">
+                    {activeTodos.map((todo) => (
+                      <TodoItemComponent
+                        key={todo.id}
+                        todo={todo}
+                        onToggle={handleToggleTodo}
+                        onDelete={handleDeleteTodo}
+                      />
+                    ))}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </SortableContext>
+              </DndContext>
+            )}
 
-          {/* Tasks without Project */}
-          {(activeTodosWithoutProject.length > 0 || completedTodosWithoutProject.length > 0) && (
-            <div className="border border-white/30 rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-lg">
-              <div className="p-3 border-b border-white/30 dark:border-gray-700">
-                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  No Project ({activeTodosWithoutProject.length} active
-                  {completedTodosWithoutProject.length > 0 && `, ${completedTodosWithoutProject.length} completed`})
-                </h3>
-              </div>
-              <div className="p-3 space-y-3">
-                {/* Active Tasks */}
-                {activeTodosWithoutProject.length > 0 && (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={(e) => handleDragEnd(e, 'none', false)}
+            {/* Completed Tasks */}
+            {completedTodos.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1 px-1">
+                  Completed
+                </h4>
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={(e) => handleDragEnd(e, true)}
+                >
+                  <SortableContext
+                    items={completedTodos.map((t) => t.id)}
+                    strategy={verticalListSortingStrategy}
                   >
-                    <SortableContext
-                      items={activeTodosWithoutProject.map((t) => t.id)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="max-h-48 overflow-y-auto space-y-1">
-                        {activeTodosWithoutProject.map((todo) => (
-                          <TodoItemComponent
-                            key={todo.id}
-                            todo={todo}
-                            onToggle={handleToggleTodo}
-                            onDelete={handleDeleteTodo}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                )}
-
-                {/* Completed Tasks */}
-                {completedTodosWithoutProject.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1 px-1">
-                      Completed
-                    </h4>
-                    <DndContext
-                      sensors={sensors}
-                      collisionDetection={closestCenter}
-                      onDragEnd={(e) => handleDragEnd(e, 'none', true)}
-                    >
-                      <SortableContext
-                        items={completedTodosWithoutProject.map((t) => t.id)}
-                        strategy={verticalListSortingStrategy}
-                      >
-                        <div className="max-h-32 overflow-y-auto space-y-1">
-                          {completedTodosWithoutProject.map((todo) => (
-                            <TodoItemComponent
-                              key={todo.id}
-                              todo={todo}
-                              onToggle={handleToggleTodo}
-                              onDelete={handleDeleteTodo}
-                            />
-                          ))}
-                        </div>
-                      </SortableContext>
-                    </DndContext>
-                  </div>
-                )}
+                    <div className="max-h-32 overflow-y-auto space-y-1">
+                      {completedTodos.map((todo) => (
+                        <TodoItemComponent
+                          key={todo.id}
+                          todo={todo}
+                          onToggle={handleToggleTodo}
+                          onDelete={handleDeleteTodo}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>

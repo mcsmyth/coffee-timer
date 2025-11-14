@@ -97,17 +97,15 @@ export const generateTodoId = (): string => {
 /**
  * Create a new todo item
  * @param text - Task description
- * @param projectId - Optional project ID to associate the task with
  * @returns New TodoItem object
  */
-export const createTodo = (text: string, projectId?: string): TodoItem => {
+export const createTodo = (text: string): TodoItem => {
   return {
     id: generateTodoId(),
     text: text.trim(),
     completed: false,
     createdAt: Date.now(),
     order: Date.now(), // Use timestamp for simple ordering
-    projectId,
   };
 };
 

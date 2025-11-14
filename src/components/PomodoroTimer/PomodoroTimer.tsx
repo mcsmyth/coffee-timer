@@ -5,7 +5,6 @@ import { CoffeeMug } from './CoffeeMug';
 import { TimerDisplay } from './TimerDisplay';
 import { TimerControls } from './TimerControls';
 import { TimerPresets } from './TimerPresets';
-import { MusicPlayer } from './MusicPlayer';
 import { TodoList } from './TodoList';
 import { TodoListPanel } from './TodoListPanel';
 import { ModeSelector } from './ModeSelector';
@@ -150,6 +149,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
                   onPause={timer.pause}
                   onReset={timer.reset}
                   overlay={true}
+                  sessionId={timer.sessionId}
                 />
               </div>
             </>
@@ -158,7 +158,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
           {/* When timer is NOT running - Scrollable content layout */}
           {!timer.isRunning && (
             <div className="absolute inset-0 z-20 overflow-y-auto">
-              <div className="min-h-full flex flex-col items-center justify-center px-4 py-8 pb-56">
+              <div className="min-h-full flex flex-col items-center justify-center px-4 py-8">
                 {/* Header */}
                 <div className="text-center mb-8">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg" style={{ textShadow: '0 4px 20px rgba(0, 0, 0, 0.8)' }}>
@@ -189,6 +189,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
                       onPause={timer.pause}
                       onReset={timer.reset}
                       overlay={true}
+                      sessionId={timer.sessionId}
                     />
                   </div>
 
@@ -229,14 +230,6 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
           )}
 
         </CoffeeMug>
-
-        {/* Music Player - Always mounted outside conditionals to maintain audio playback */}
-        {/* Hidden when timer is running (use opacity instead of display:none to keep audio playing) */}
-        <div className={`fixed bottom-32 inset-x-0 z-30 transition-opacity duration-300 ${timer.isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <div className="flex justify-center">
-            <MusicPlayer isRunning={timer.isRunning} sessionId={timer.sessionId} />
-          </div>
-        </div>
         
         {/* Todo List Panel - accessible during timer */}
         {timer.isRunning && (

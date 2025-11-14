@@ -1,19 +1,15 @@
 import React, { useState, KeyboardEvent } from 'react';
 import { Plus } from 'lucide-react';
-import { Project } from '../../utils/todoUtils';
-import { ProjectSelector } from './ProjectSelector';
 
 interface TodoInputProps {
-  onAddTodo: (text: string, projectId?: string) => void;
-  projects?: Project[];
+  onAddTodo: (text: string) => void;
   disabled?: boolean;
 }
 
 const MAX_TODO_LENGTH = 200;
 
-export const TodoInput: React.FC<TodoInputProps> = ({ onAddTodo, projects = [], disabled = false }) => {
+export const TodoInput: React.FC<TodoInputProps> = ({ onAddTodo, disabled = false }) => {
   const [inputValue, setInputValue] = useState<string>('');
-  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>(undefined);
 
   const handleSubmit = () => {
     const trimmed = inputValue.trim();
@@ -24,12 +20,12 @@ export const TodoInput: React.FC<TodoInputProps> = ({ onAddTodo, projects = [], 
 
     if (trimmed.length > MAX_TODO_LENGTH) {
       // Truncate if too long (could show warning instead)
-      onAddTodo(trimmed.substring(0, MAX_TODO_LENGTH), selectedProjectId);
+      onAddTodo(trimmed.substring(0, MAX_TODO_LENGTH));
     } else {
-      onAddTodo(trimmed, selectedProjectId);
+      onAddTodo(trimmed);
     }
 
-    // Clear input after adding (but keep project selection)
+    // Clear input after adding
     setInputValue('');
   };
 
@@ -74,13 +70,6 @@ export const TodoInput: React.FC<TodoInputProps> = ({ onAddTodo, projects = [], 
           <span className="hidden sm:inline">Add</span>
         </button>
       </div>
-      {projects.length > 0 && (
-        <ProjectSelector
-          projects={projects}
-          selectedProjectId={selectedProjectId}
-          onSelectProject={setSelectedProjectId}
-        />
-      )}
     </div>
   );
 };
