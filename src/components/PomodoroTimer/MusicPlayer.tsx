@@ -23,10 +23,10 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId, 
     return getSelectedSongIndex(MUSIC_PLAYLIST.length);
   };
 
-  const [isMuted, setIsMuted] = useState<boolean>(getInitialMuteState());
+  const [isMuted, setIsMuted] = useState<boolean>(getInitialMuteState);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState<number>(getInitialSongIndex());
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(getInitialSongIndex);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 

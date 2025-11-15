@@ -45,8 +45,8 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
     return minutesToSeconds(1); // Default to 1 minute
   };
 
-  const [initialTime, setInitialTime] = useState<number>(getInitialTime());
-  const [customTime, setCustomTime] = useState<number>(getCustomTime());
+  const [initialTime, setInitialTime] = useState<number>(getInitialTime);
+  const [customTime, setCustomTime] = useState<number>(getCustomTime);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
   const timer = usePomodoroTimer(initialTime);
