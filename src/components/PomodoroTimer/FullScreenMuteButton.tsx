@@ -14,7 +14,7 @@ export const FullScreenMuteButton: React.FC<FullScreenMuteButtonProps> = ({ onTo
     return saved === 'true';
   };
 
-  const [isMuted, setIsMuted] = useState<boolean>(getInitialMuteState());
+  const [isMuted, setIsMuted] = useState<boolean>(getInitialMuteState);
 
   // Sync with localStorage changes from MusicPlayer
   useEffect(() => {
@@ -34,21 +34,12 @@ export const FullScreenMuteButton: React.FC<FullScreenMuteButtonProps> = ({ onTo
 
     window.addEventListener('musicMuteToggled', handleMuteToggle as EventListener);
     window.addEventListener('storage', handleStorageChange);
-    
-    // Also check localStorage periodically in case same-tab changes aren't caught
-    const interval = setInterval(() => {
-      const currentState = localStorage.getItem(MUTE_STORAGE_KEY) === 'true';
-      if (currentState !== isMuted) {
-        setIsMuted(currentState);
-      }
-    }, 100);
 
     return () => {
       window.removeEventListener('musicMuteToggled', handleMuteToggle as EventListener);
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
     };
-  }, [isMuted]);
+  }, []);
 
   const handleToggle = () => {
     const newMuteState = !isMuted;

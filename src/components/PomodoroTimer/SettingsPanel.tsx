@@ -13,8 +13,10 @@ interface SettingsPanelProps {
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, isDarkMode, setIsDarkMode }) => {
-  const [selectedImageId, setSelectedImageId] = useState<string>(getSelectedCoffeeShopImageId());
-  const [selectedSongIndex, setSelectedSongIndexState] = useState<number>(getSelectedSongIndex(MUSIC_PLAYLIST.length));
+  const [selectedImageId, setSelectedImageId] = useState<string>(getSelectedCoffeeShopImageId);
+  const [selectedSongIndex, setSelectedSongIndexState] = useState<number>(() =>
+    getSelectedSongIndex(MUSIC_PLAYLIST.length)
+  );
 
   // Update selected image when localStorage changes
   useEffect(() => {
