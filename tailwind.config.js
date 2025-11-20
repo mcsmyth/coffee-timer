@@ -12,7 +12,7 @@ module.exports = {
         accent: '#F59E0B',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Space Mono', 'monospace'],
       },
     },
   },

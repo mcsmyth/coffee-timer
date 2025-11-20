@@ -29,6 +29,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId, 
   const [currentSongIndex, setCurrentSongIndex] = useState<number>(getInitialSongIndex);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef<boolean>(true);
 
   // Listen for song selection changes from settings
   useEffect(() => {
@@ -48,6 +49,24 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ isRunning, sessionId, 
       window.removeEventListener('selectedSongChanged', handleSongChange as EventListener);
     };
   }, []);
+
+  // Dispatch toast notification when song changes (but not on initial mount)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const currentSong = MUSIC_PLAYLIST[currentSongIndex];
+    if (currentSong) {
+      const songName = currentSong.title || currentSong.filename;
+      window.dispatchEvent(
+        new CustomEvent('songChanged', {
+          detail: { songName }
+        })
+      );
+    }
+  }, [currentSongIndex]);
 
   // Function to play next song in playlist
   const playNextSong = useCallback(() => {

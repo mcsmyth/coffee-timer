@@ -8,10 +8,10 @@ import { TimerPresets } from './TimerPresets';
 import { TodoList } from './TodoList';
 import { TodoListPanel } from './TodoListPanel';
 import { ModeSelector } from './ModeSelector';
-import { FullScreenMuteButton } from './FullScreenMuteButton';
 import { SettingsButton } from './SettingsButton';
 import { SettingsPanel } from './SettingsPanel';
 import { AnalyticsView } from './AnalyticsView';
+import { SongChangeToast } from './SongChangeToast';
 import { BarChart3 } from 'lucide-react';
 
 const STORAGE_KEY = 'pomodoro_custom_time';
@@ -239,10 +239,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
             isTimerActive={timer.isRunning}
           />
         )}
-        
-        {/* Mute Button - top-right corner */}
-        {timer.isRunning && <FullScreenMuteButton />}
-        
+
         {/* Settings Button - bottom-right corner */}
         <SettingsButton onClick={() => setIsSettingsOpen(true)} overlay={true} />
       </div>
@@ -254,6 +251,9 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ isDarkMode, setIsD
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
       />
+
+      {/* Song Change Toast */}
+      <SongChangeToast />
     </>
   );
 };

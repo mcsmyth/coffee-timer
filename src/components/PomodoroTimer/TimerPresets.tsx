@@ -122,7 +122,7 @@ export const TimerPresets: React.FC<TimerPresetsProps> = ({
         style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
       >
         {isEditingCustom ? (
-          <form onSubmit={handleCustomSubmit} className="h-full flex flex-col justify-center">
+          <form onSubmit={handleCustomSubmit} className="h-full flex flex-col justify-center items-center">
             <div className="text-sm font-medium mb-1">Custom</div>
             <input
               ref={inputRef}
@@ -133,7 +133,7 @@ export const TimerPresets: React.FC<TimerPresetsProps> = ({
               onChange={handleCustomChange}
               onBlur={handleCustomBlur}
               onKeyDown={handleCustomKeyDown}
-              className="w-full bg-white/20 backdrop-blur-sm border border-white/30 rounded px-2 py-1 text-lg font-bold text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+              className="w-full bg-white/20 backdrop-blur-sm border border-white/30 rounded px-2 py-1 text-lg font-bold text-white placeholder-white/70 text-center focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
               placeholder="min"
               style={{ WebkitAppearance: 'none', MozAppearance: 'textfield' }}
               aria-label="Custom timer minutes"
@@ -142,7 +142,7 @@ export const TimerPresets: React.FC<TimerPresetsProps> = ({
         ) : (
           <button
             onClick={handleCustomClick}
-            className="w-full text-left h-full flex flex-col justify-center"
+            className="w-full h-full flex flex-col justify-center items-center"
             aria-label={`Set timer to ${customMinutes} minutes`}
           >
             <div className="text-sm font-medium">Custom</div>
